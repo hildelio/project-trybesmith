@@ -6,6 +6,15 @@ const create = async (req: Request, res: Response): Promise<Response> => {
   return res.status(type).json(data);
 };
 
+const getAll = async (req: Request, res: Response): Promise<Response> => {
+  const { type, message, data } = await productService.getAll();
+  if (type > 300) {
+    return res.status(type).send({ message });
+  }
+  return res.status(type).json(data);
+};
+
 export default {
   create,
+  getAll,
 };
