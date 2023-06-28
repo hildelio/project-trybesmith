@@ -12,7 +12,6 @@ const create = async ({ name, price, orderId }: Product): Promise<ServiceRespons
 
 const getAll = async (): Promise<ServiceResponse<Product[]>> => {
   const response = await ProductModel.findAll();
-  console.log(response);
   const threatedResponse = response.map((product) => (product.dataValues));
   return { type: 200, message: 'OK', data: threatedResponse };
 };
