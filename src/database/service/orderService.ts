@@ -24,6 +24,19 @@ const getAll = async (): Promise<ServiceResponse<OrderSequelizeModel[]>> => {
   return response;
 };
 
+const create = async ({ productIds, userId }: { productIds: { id: number }[], userId: number }):
+Promise<ServiceResponse<OrderSequelizeModel>> => {
+  const createOrder = await OrderModel.create({ userId });
+  const productIdsToUpdate = productIds.map((product) => (product.id));
+
+  await ProductModel.update(
+    { orderId: createOrder.dataValues.id }, 
+    { where: { id: productIdsToUpdate } },
+  );
+  return { type: 201, message: 'Created', data: null };
+};
+
 export default {
   getAll,
+  create,
 };

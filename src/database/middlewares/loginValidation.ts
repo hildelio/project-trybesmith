@@ -8,14 +8,15 @@ const loginSchema = Joi.object({
   'any.required': '"username" and "password" are required',
   'string.empty': '"username" and "password" are required',
 });
-const loginValidation = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const loginValidation = async (req: Request, res: Response, next: NextFunction):
+Promise<Response | void> => {
   try {
     await loginSchema.validateAsync(req.body);
-    next();
+    return next();
   } catch (error: unknown) {
     const validationError: ValidationError = error as ValidationError;
     const { message } = validationError.details[0];
-    res.status(400).json({ message });
+    return res.status(400).json({ message });
   }
 };
 
