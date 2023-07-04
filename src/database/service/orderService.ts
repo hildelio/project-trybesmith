@@ -2,6 +2,7 @@ import { Sequelize } from 'sequelize';
 import OrderModel, { OrderSequelizeModel } from '../models/order.model';
 import { ServiceResponse } from '../../types/ServiceResponse';
 import ProductModel from '../models/product.model';
+import { CreateOrder } from '../../types/CreateOrder';
 
 const getAll = async (): Promise<ServiceResponse<OrderSequelizeModel[]>> => {
   const ordersResponse = await OrderModel.findAll({
@@ -24,8 +25,8 @@ const getAll = async (): Promise<ServiceResponse<OrderSequelizeModel[]>> => {
   return response;
 };
 
-const create = async ({ productIds, userId }: { productIds: { id: number }[], userId: number }):
-Promise<ServiceResponse<OrderSequelizeModel>> => {
+const create = async ({ productIds, userId }: CreateOrder):
+Promise<ServiceResponse<OrderSequelizeModel | CreateOrder>> => {
   const createOrder = await OrderModel.create({ userId });
   const productIdsToUpdate = productIds.map((product) => (product.id));
 
@@ -33,7 +34,7 @@ Promise<ServiceResponse<OrderSequelizeModel>> => {
     { orderId: createOrder.dataValues.id }, 
     { where: { id: productIdsToUpdate } },
   );
-  return { type: 201, message: 'Created', data: null };
+  return { type: 201, message: 'Created', data: { userId, productIds } };
 };
 
 export default {

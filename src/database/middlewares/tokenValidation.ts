@@ -21,26 +21,12 @@ Promise<Response | void> => {
     }
     return res.status(500).json({ message: 'internal server error' });
   }
-
-  // const { authorization } = req.headers;
-  // const { error } = tokenSchema.validate(authorization);
-  // if (error) {
-  //   res.status(401).json({ message: error.message });
-  //   return;
-  // }
-  // const token = authorization as string;
-  // try {
-  //   decodedToken(token);    
-  //   next();
-  // } catch (err) {
-  //   res.status(401).json({ message: 'Invalid token' });
-  // }
 };
 
 export const tokenValidation = async (req: Request, res: Response, next: NextFunction):
 Promise<Response | void> => {
   const { authorization } = req.headers;
-  const token = authorization as string;
+  const [, token] = authorization?.split(' ') || [];  
   try {
     decodedToken(token);
     return next();
